@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TodoSerializer
-from .models import Todo
+from .serializers import TaskSerializer
+from .models import Task
+from todo import serializers
 
 # Views
 @api_view(['GET'])
@@ -16,31 +17,31 @@ def home(request):
 
 @api_view(['GET'])
 def taskList(request):
-  tasks = Todo.objects.all()
-  serializer = TodoSerializer(tasks, many=True)
+  tasks = Task.objects.all()
+  serializer = TaskSerializer(tasks, many=True)
 
   return Response(serializer.data)
 
 @api_view(['GET'])
 def task(request, id):
-  task = Todo.objects.get(id = id)
-  serializer = TodoSerializer(task, many=False)
+  task = Task.objects.get(id = id)
+  serializer = TaskSerializer(task, many=False)
 
   return Response(serializer.data)
 
 @api_view(['POST'])
 def new_task(request):
-  serializer = TodoSerializer(data=request.data)
+  serializer = TaskSerializer(data=request.data)
 
   if serializer.is_valid():
     serializer.save()
 
-  return Response(serializer.data)
+  return Response({ 'task': serializer.data, 'status': 200 })
 
 @api_view(['PUT'])
 def edit_task(request, id):
-  task = Todo.objects.get(id = id)
-  serializer = TodoSerializer(instance=task, data=request.data)
+  task = Task.objects.get(id = id)
+  serializer = TaskSerializer(instance=task, data=request.data)
 
   if serializer.is_valid():
     serializer.save()
@@ -49,7 +50,7 @@ def edit_task(request, id):
 
 @api_view(['DELETE'])
 def delete_task(request, id):
-  task = Todo.objects.filter(id = id) 
+  task = Task.objects.filter(id = id) 
   task.delete()
 
-  return Response('Successfully deleted')
+  return Response({ 'status': 200 })

@@ -25,7 +25,6 @@ function App() {
     e.preventDefault();
 
     const res = await axios.post('/todo/new-task/', { title: newTask });
-    console.log(res.data);
 
     if (res.data.status === 200) {
       setNewTask('');
@@ -39,6 +38,15 @@ function App() {
     if (res.data.status === 200) {
       setTasks(tasks.filter((task) => id !== task.id));
     }
+  };
+
+  const markAsComplete = async (task) => {
+    await axios.put(`/todo/edit-task/${task.id}/`, {
+      id: task.id,
+      title: task.title,
+      completed: true,
+      created_at: task.created_at,
+    });
   };
 
   if (loading) return <h1>Loading...</h1>;
@@ -60,14 +68,19 @@ function App() {
       </form>
       <hr />
       <h2>Your Tasks</h2>
-      {tasks?.map((task) => (
-        <div key={task.id} style={{ marginTop: 60 }}>
-          <h4>{task.title}</h4>
-          <h6>{task.created_at}</h6>
-          <h5>{!task.completed ? 'Not Completed' : 'Completed'}</h5>
-          <button onClick={() => deleteTask(task.id)}>Delete</button>
-        </div>
-      ))}
+      {tasks?.map(
+        (task) =>
+          !task.completed && (
+            <div key={task.id} style={{ marginTop: 60 }}>
+              <h4>{task.title}</h4>
+              <h6>{task.created_at}</h6>
+              <button onClick={() => deleteTask(task.id)}>Delete</button>
+              <button onClick={() => markAsComplete(task)}>
+                Mark As Complete
+              </button>
+            </div>
+          )
+      )}
     </div>
   );
 }
