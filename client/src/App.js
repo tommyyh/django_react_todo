@@ -47,6 +47,12 @@ function App() {
       completed: true,
       created_at: task.created_at,
     });
+
+    setTasks(
+      tasks.map((task2) =>
+        task2.id === task.id ? { ...task2, completed: true } : task2
+      )
+    );
   };
 
   if (loading) return <h1>Loading...</h1>;
@@ -67,20 +73,42 @@ function App() {
         <button type='submit'>Add Task</button>
       </form>
       <hr />
-      <h2>Your Tasks</h2>
-      {tasks?.map(
-        (task) =>
-          !task.completed && (
-            <div key={task.id} style={{ marginTop: 60 }}>
-              <h4>{task.title}</h4>
-              <h6>{task.created_at}</h6>
-              <button onClick={() => deleteTask(task.id)}>Delete</button>
-              <button onClick={() => markAsComplete(task)}>
-                Mark As Complete
-              </button>
-            </div>
-          )
-      )}
+      <div
+        style={{
+          display: 'flex',
+        }}
+      >
+        <div>
+          <h2>Your Tasks</h2>
+          {tasks.map(
+            (task) =>
+              !task.completed && (
+                <div key={task.id} style={{ marginTop: 60 }}>
+                  <h4>{task.title}</h4>
+                  <h6>{task.created_at}</h6>
+                  <button onClick={() => deleteTask(task.id)}>Delete</button>
+                  <button onClick={() => markAsComplete(task)}>
+                    Mark As Complete
+                  </button>
+                </div>
+              )
+          )}
+        </div>
+        <div style={{ marginLeft: '30%' }}>
+          <h2>Your completed tasks</h2>
+          {tasks.map(
+            (task) =>
+              task.completed && (
+                <div key={task.id} style={{ marginTop: 60 }}>
+                  <h4>{task.title}</h4>
+                  <h6>{task.created_at}</h6>
+                  <h5>Completed</h5>
+                  <button onClick={() => deleteTask(task.id)}>Delete</button>
+                </div>
+              )
+          )}
+        </div>
+      </div>
     </div>
   );
 }
