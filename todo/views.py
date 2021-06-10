@@ -6,13 +6,7 @@ from .models import Task
 # Views
 @api_view(['GET'])
 def home(request):
-  shortcuts = {
-    'Fuck me': 'Harder',
-    'My Balls': 'Are hairy',
-    'My Dick': 'Is Hard'
-  }
-
-  return Response(shortcuts)
+  return Response('Home')
 
 @api_view(['GET'])
 def taskList(request):
